@@ -1,77 +1,77 @@
-const ctx = document.getElementById('grafico').getContext('2d');
-const listaMoedasEl = document.getElementById('coinList');
-const filtroMoedas = document.getElementById('searchInput');
+const ctx = document.getElementById('chart').getContext('2d');
+const coinListEl = document.getElementById('coinList');
+const searchCoin = document.getElementById('searchInput');
 
-let graficoLinha;
-let dadosMercado = [];
+let lineChart;
+let marketData = [];
 
-async function obterDadosMercado() {
-  if (dadosMercado.length) return dadosMercado;
+async function getMarketData() {
+  if (marketData.length) return marketData;
 
   try {
-    const resposta = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=50&page=1&sparkline=false&price_change_percentage=24h');
-    if (!resposta.ok) throw new Error('Erro ao buscar dados do mercado');
-    dadosMercado = await resposta.json();
-    return dadosMercado;
-  } catch (erro) {
-    console.error(erro);
+    const response = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=50&page=1&sparkline=false&price_change_percentage=24h');
+    if (!response.ok) throw new Error('Error fetching market data');
+    marketData = await response.json();
+    return marketData;
+  } catch (error) {
+    console.error(error);
     return [];
   }
 }
 
-async function obterDadosHistoricos(idMoeda) {
+async function getHistoricalData(coinId) {
   try {
-    const resposta = await fetch(`https://api.coingecko.com/api/v3/coins/${idMoeda}/market_chart?vs_currency=usd&days=7&interval=daily`);
-    if (!resposta.ok) throw new Error('Erro ao buscar dados');
-    return await resposta.json();
-  } catch (erro) {
-    console.error(erro);
+    const response = await fetch(`https://api.coingecko.com/api/v3/coins/${coinId}/market_chart?vs_currency=usd&days=7&interval=daily`);
+    if (!response.ok) throw new Error('Error fetching historical data');
+    return await response.json();
+  } catch (error) {
+    console.error(error);
     return null;
   }
 }
 
-function formatarUSD(valor) {
-  return `$${valor.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+function formatUSD(value) {
+  return `$${value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
-function atualizarListaMoedas(dados, filtro = '') {
-  listaMoedasEl.innerHTML = '';
-  const filtrados = dados.filter(({ name, symbol }) =>
-    name.toLowerCase().includes(filtro.toLowerCase()) || symbol.toLowerCase().includes(filtro.toLowerCase())
+function updateCoinList(data, filter = '') {
+  coinListEl.innerHTML = '';
+  const filtered = data.filter(({ name, symbol }) =>
+    name.toLowerCase().includes(filter.toLowerCase()) || symbol.toLowerCase().includes(filter.toLowerCase())
   );
 
-  filtrados.forEach(({ id, symbol, name, current_price }) => {
+  filtered.forEach(({ id, symbol, name, current_price }) => {
     const li = document.createElement('li');
-    li.innerHTML = `<span>${symbol.toUpperCase()} - ${name}</span> <span>${formatarUSD(current_price)}</span>`;
-    li.addEventListener('click', () => carregarGrafico(id, symbol.toUpperCase()));
-    listaMoedasEl.appendChild(li);
+    li.innerHTML = `<span>${symbol.toUpperCase()} - ${name}</span> <span>${formatUSD(current_price)}</span>`;
+    li.addEventListener('click', () => loadChart(id, symbol.toUpperCase()));
+    coinListEl.appendChild(li);
   });
 }
 
-async function carregarGrafico(idMoeda, simboloMoeda) {
-  const dadosHistoricos = await obterDadosHistoricos(idMoeda);
-  if (!dadosHistoricos) return;
+async function loadChart(coinId, coinSymbol) {
+  const historicalData = await getHistoricalData(coinId);
+  if (!historicalData) return;
 
-  const labels = dadosHistoricos.prices.map(([timestamp]) => {
-    const data = new Date(timestamp);
-    return data.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });
+  const labels = historicalData.prices.map(([timestamp]) => {
+    const date = new Date(timestamp);
+    return date.toLocaleDateString('en-US', { day: '2-digit', month: 'short' });
   });
 
-  const precos = dadosHistoricos.prices.map(([, preco]) => preco);
+  const prices = historicalData.prices.map(([, price]) => price);
 
-  if (graficoLinha) {
-    graficoLinha.data.labels = labels;
-    graficoLinha.data.datasets[0].data = precos;
-    graficoLinha.data.datasets[0].label = `${simboloMoeda} (USD)`;
-    graficoLinha.update();
+  if (lineChart) {
+    lineChart.data.labels = labels;
+    lineChart.data.datasets[0].data = prices;
+    lineChart.data.datasets[0].label = `${coinSymbol} (USD)`;
+    lineChart.update();
   } else {
-    graficoLinha = new Chart(ctx, {
+    lineChart = new Chart(ctx, {
       type: 'line',
       data: {
         labels,
         datasets: [{
-          label: `${simboloMoeda} (USD)`,
-          data: precos,
+          label: `${coinSymbol} (USD)`,
+          data: prices,
           borderColor: '#4f6ef7',
           backgroundColor: 'rgba(79,110,247,0.1)',
           fill: true,
@@ -92,23 +92,23 @@ async function carregarGrafico(idMoeda, simboloMoeda) {
   }
 }
 
-async function iniciar() {
-  const dados = await obterDadosMercado();
-  if (!dados.length) {
-    listaMoedasEl.innerHTML = '<li>Não foi possível carregar dados.</li>';
+async function init() {
+  const data = await getMarketData();
+  if (!data.length) {
+    coinListEl.innerHTML = '<li>Unable to load data.</li>';
     return;
   }
 
-  atualizarListaMoedas(dados);
-  carregarGrafico(dados[0].id, dados[0].symbol.toUpperCase());
+  updateCoinList(data);
+  loadChart(data[0].id, data[0].symbol.toUpperCase());
 }
 
-let tempoDebounce;
-filtroMoedas.addEventListener('input', e => {
-  clearTimeout(tempoDebounce);
-  tempoDebounce = setTimeout(() => {
-    atualizarListaMoedas(dadosMercado, e.target.value);
+let debounceTimer;
+searchCoin.addEventListener('input', e => {
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(() => {
+    updateCoinList(marketData, e.target.value);
   }, 300);
 });
 
-iniciar();
+init();
