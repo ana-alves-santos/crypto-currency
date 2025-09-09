@@ -1,32 +1,31 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Dashboard Criptomoedas</title>
+  <title>Crypto Dashboard</title>
   <link rel="stylesheet" href="style.css" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-  <div class="painelCripto">
+  <div class="crypto-dashboard">
 
-    <aside class="menuLateral">
-      <h2>Lista de Moedas</h2>
-      <input type="text" placeholder="🔍 Buscar moeda..." class="filtroMoedas" id="searchInput" />
-      <ul class="listaCripto" id="coinList"></ul>
+    <aside class="sidebar">
+      <h2>Coin List</h2>
+      <input type="text" placeholder="🔍 Search coin..." class="search-coin" id="searchInput" />
+      <ul class="coin-list" id="coinList"></ul>
     </aside>
 
-    <main class="conteudoPrincipal">
-      <header class="cabecalho">
+    <main class="main-content">
+      <header class="header">
         <h1>📊 BitScope</h1>
-        <p>Resumo</p>
+        <p>Overview</p>
       </header>
 
-      <section class="painel painelGrafico">
-        <h2>Gráfico (últimos 7 dias)</h2>
-        <canvas id="grafico"></canvas>
+      <section class="panel chart-panel">
+        <h2>Chart (last 7 days)</h2>
+        <canvas id="chart"></canvas>
       </section>
-
     </main>
 
   </div>
