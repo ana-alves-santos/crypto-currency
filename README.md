@@ -11,8 +11,7 @@ dashboard built to practice working with APIs.
 
 
 
-
-![alt text](image.png)
+<img width="1294" height="574" alt="image" src="https://github.com/user-attachments/assets/435ec0c7-0eba-483f-87e8-88e90fc15351" />
 
 ## ✨ Features
 
