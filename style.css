@@ -21,8 +21,7 @@ body {
   min-height: 100vh;
 }
 
-
-.painelCripto {
+.crypto-dashboard {
   background: #1f2235;
   border-radius: 10px;
   width: 100%;
@@ -33,8 +32,7 @@ body {
   padding: 20px;
 }
 
-
-.menuLateral {
+.sidebar {
   flex: 0 0 300px;
   background: #24293e;
   border-radius: 10px;
@@ -44,14 +42,13 @@ body {
   overflow: hidden;
 }
 
-.menuLateral h2 {
+.sidebar h2 {
   margin-bottom: 14px;
   color: #4f6ef7;
   font-size: 1.3rem;
 }
 
-
-.filtroMoedas {
+.search-coin {
   padding: 9px 12px;
   border-radius: 6px;
   border: none;
@@ -61,13 +58,12 @@ body {
   margin-bottom: 14px;
 }
 
-.filtroMoedas:focus {
+.search-coin:focus {
   background-color: #384067;
   outline: none;
 }
 
-
-.listaCripto {
+.coin-list {
   list-style: none;
   flex-grow: 1;
   overflow-y: auto;
@@ -76,16 +72,16 @@ body {
   scrollbar-color: #4f6ef7 transparent;
 }
 
-.listaCripto::-webkit-scrollbar {
+.coin-list::-webkit-scrollbar {
   width: 7px;
 }
 
-.listaCripto::-webkit-scrollbar-thumb {
+.coin-list::-webkit-scrollbar-thumb {
   background-color: #4f6ef7;
   border-radius: 3px;
 }
 
-.listaCripto li {
+.coin-list li {
   display: flex;
   justify-content: space-between;
   padding: 9px 6px;
@@ -96,16 +92,15 @@ body {
   user-select: none;
 }
 
-.listaCripto li:hover {
+.coin-list li:hover {
   background-color: #3a3f6f;
 }
 
-.listaCripto li:last-child {
+.coin-list li:last-child {
   border-bottom: none;
 }
 
-
-.conteudoPrincipal {
+.main-content {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -113,23 +108,21 @@ body {
   overflow: hidden;
 }
 
-
-.cabecalho {
+.header {
   flex-shrink: 0;
 }
 
-.cabecalho h1 {
+.header h1 {
   font-size: 1.9rem;
   margin-bottom: 6px;
 }
 
-.cabecalho p {
+.header p {
   font-size: 1rem;
   color: #a4a7b7;
 }
 
-
-.painel {
+.panel {
   background: #24293e;
   border-radius: 10px;
   padding: 18px;
@@ -138,12 +131,11 @@ body {
   flex-direction: column;
 }
 
-
-.painelGrafico {
-  flex-grow: 1; 
+.chart-panel {
+  flex-grow: 1;
 }
 
-.painelGrafico canvas {
+.chart-panel canvas {
   width: 100% !important;
   height: 350px !important;
 }
